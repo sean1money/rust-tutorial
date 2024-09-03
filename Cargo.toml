@@ -1,0 +1,39 @@
+[package]
+name = "rust-tutorial"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+anyhow = "1.0.86"
+async-trait = "0.1.82"
+console-subscriber = "0.4.0"
+dashmap = "6.0.1"
+hyper = "1.4.1"
+hyper-util = { version = "0.1.7", features = ["client", "server"] }
+jsonrpsee = { version = "0.24.3", features = [
+    "http-client",
+    "server",
+    "macros",
+    "tracing",
+    "jsonrpsee-core",
+    "jsonrpsee-types",
+] }
+serde = { version = "1.0.209", features = ["derive"] }
+serde_json = "1.0.127"
+thiserror = "1.0.63"
+tokio = { version = "1.40.0", features = [
+    "rt",
+    "rt-multi-thread",
+    "macros",
+    "net",
+    "fs",
+    "io-util",
+    "io-std",
+    "sync",
+    "time",
+    "tracing",
+] }
+tower = { version = "0.4.13", features = ["full"] }
+tower-http = { version = "0.5.2", features = ["full"] }
+tracing = "0.1.40"
+tracing-subscriber = { version = "0.3.18", features = ["env-filter"] }
