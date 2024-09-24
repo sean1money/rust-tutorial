@@ -1,6 +1,5 @@
-use std::{fmt::Debug, future::Future, sync::Arc};
-
 use anyhow::Result;
+use std::{fmt::Debug, future::Future, sync::Arc};
 
 #[tokio::main]
 async fn main() -> Result<()> {
@@ -12,6 +11,7 @@ struct TxSigned {
     sender: String,
 }
 
+#[allow(dead_code)]
 impl TxSigned {
     fn new(hash: String, sender: String) -> Self {
         Self { hash, sender }
@@ -24,6 +24,7 @@ impl From<TxSigned> for PooledTransaction {
     }
 }
 
+#[allow(dead_code)]
 struct EthApi<Pool> {
     inner: Arc<EthApiInner<Pool>>,
 }
@@ -32,6 +33,7 @@ impl<Pool> EthApi<Pool>
 where
     Pool: TransactionPool + 'static,
 {
+    #[allow(dead_code)]
     async fn send_raw_transaction(&self, tx: TxSigned) -> Result<()> {
         let inner = self.inner.clone();
 
@@ -60,6 +62,7 @@ impl<V> Pool<V>
 where
     V: TransactionValidator,
 {
+    #[allow(dead_code)]
     fn new(validator: V) -> Self {
         Self {
             inner: Arc::new(PoolInner::new(validator)),
@@ -93,6 +96,7 @@ impl<V> PoolInner<V> {
     }
 }
 
+#[allow(dead_code)]
 trait PoolTransaction: Debug + Send + Sync + FromRecoveredPooledTransaction {
     fn hash(&self) -> String;
     fn sender(&self) -> String;
@@ -137,10 +141,12 @@ trait TransactionValidator: Send + Sync {
     fn validate(&self, tx: Self::Transaction) -> impl Future<Output = Result<bool>> + Send;
 }
 
+#[allow(dead_code)]
 struct DefaultTxValidator<S> {
     inner: Arc<DefaultTxValidatorInner<S>>,
 }
 
+#[allow(dead_code)]
 impl<S> DefaultTxValidator<S> {
     fn new(state: S) -> Self {
         Self {
@@ -149,6 +155,7 @@ impl<S> DefaultTxValidator<S> {
     }
 }
 
+#[allow(dead_code)]
 struct DefaultTxValidatorInner<S> {
     state: S,
 }
@@ -167,14 +174,16 @@ where
     }
 }
 
+#[allow(dead_code)]
 trait AccountState: Sync + Send {
     fn get_balance(&self, account: &str) -> u64;
 }
 
+#[allow(dead_code)]
 struct DefaultAccountState;
 
 impl AccountState for DefaultAccountState {
-    fn get_balance(&self, account: &str) -> u64 {
+    fn get_balance(&self, _account: &str) -> u64 {
         0
     }
 }
