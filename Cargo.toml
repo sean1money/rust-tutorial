@@ -4,11 +4,14 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+alloy = { version = "0.4.2", features = ["full"] }
+alloy-pubsub = "0.4.2"
 alloy-rlp = { version = "0.3.8", features = ["derive"] }
 anyhow = "1.0.86"
 async-trait = "0.1.82"
 auto_impl = "1.2.0"
 console-subscriber = "0.4.0"
+crossbeam = "0.8.4"
 dashmap = "6.0.1"
 hex = "0.4.3"
 hex-literal = "0.4.1"
