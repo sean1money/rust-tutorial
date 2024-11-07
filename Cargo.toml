@@ -4,14 +4,16 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-alloy = { version = "0.4.2", features = ["full"] }
-alloy-pubsub = "0.4.2"
+alloy = { version = "0.5", features = ["full"] }
+alloy-pubsub = "0.5"
 alloy-rlp = { version = "0.3.8", features = ["derive"] }
-anyhow = "1.0.86"
+anyhow = "1.0.91"
 async-trait = "0.1.82"
 auto_impl = "1.2.0"
+chrono = "0.4.38"
 console-subscriber = "0.4.0"
 crossbeam = "0.8.4"
+ctrlc = "3.4.5"
 dashmap = "6.0.1"
 hex = "0.4.3"
 hex-literal = "0.4.1"
@@ -26,15 +28,21 @@ jsonrpsee = { version = "0.24.3", features = [
     "jsonrpsee-types",
 ] }
 k256 = "0.13.4"
+keccak-hash = "0.11.0"
+kvdb = "0.13.0"
+kvdb-rocksdb = "0.19.0"
 rand_core = { version = "0.6.4", features = ["getrandom"] }
-rocksdb = "0.22.0"
+# rocksdb = "0.22.0"
+rocksdb = "0.21.0"
 secp256k1 = { version = "0.29.1", features = ["rand", "serde", "hashes"] }
-serde = { version = "1.0.209", features = ["derive"] }
+serde = { version = "1.0.213", features = ["derive"] }
 serde_json = "1.0.127"
 sha2 = "0.10.8"
 sha3 = "0.10.8"
-thiserror = "1.0.64"
-tokio = { version = "1.40.0", features = [
+sysinfo = "0.30.13"
+tempfile = "3.13.0"
+thiserror = "1.0.65"
+tokio = { version = "1.41.0", features = [
     "rt",
     "rt-multi-thread",
     "macros",
