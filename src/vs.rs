@@ -170,3 +170,72 @@ mod tests {
 // let pooled_tx = PooledTransaction::decode(&mut out.as_slice())
 //     .expect("should decode to PooledTransactioin");
 // let signed_tx = pooled_tx.0;
+
+/// RocksDB
+
+// #[derive(Debug)]
+// pub struct DB {
+//     db: RwLock<RocksDB>,
+// }
+
+// impl DB {
+//     pub fn new<P: AsRef<Path>>(path: P) -> Result<Self, DBError> {
+//         let mut options = Options::default();
+//         options.create_if_missing(true);
+//         let db = RocksDB::open(&options, path)?;
+//         info!("database initialized...");
+//         Ok(DB {
+//             db: RwLock::new(db),
+//         })
+//     }
+
+//     pub fn put<K, V>(&self, key: K, value: V) -> Result<(), DBError>
+//     where
+//         K: AsRef<[u8]>,
+//         V: AsRef<[u8]>,
+//     {
+//         match self.db.write() {
+//             Ok(db) => db.put(key, value).map_err(DBError::from),
+//             Err(e) => {
+//                 error!("Failed to acquire write lock: {}", e);
+//                 Err(DBError::RWLockError(e.to_string()))
+//             }
+//         }
+//     }
+
+//     pub fn get<K: AsRef<[u8]>>(&self, key: K) -> Result<Option<Vec<u8>>, DBError> {
+//         match self.db.read() {
+//             Ok(db) => db.get(key).map_err(DBError::from),
+//             Err(e) => {
+//                 error!("Failed to acquire read lock: {}", e);
+//                 Err(DBError::RWLockError(e.to_string()))
+//             }
+//         }
+//     }
+
+//     #[allow(unused)]
+//     pub fn delete<K: AsRef<[u8]>>(&self, key: K) -> Result<(), DBError> {
+//         match self.db.write() {
+//             Ok(db) => db.delete(key).map_err(DBError::from),
+//             Err(e) => {
+//                 error!("Failed to acquire write lock: {}", e);
+//                 Err(DBError::RWLockError(e.to_string()))
+//             }
+//         }
+//     }
+// }
+
+// impl Drop for DB {
+//     fn drop(&mut self) {
+//         match self.db.write() {
+//             Ok(db) => {
+//                 if let Err(e) = db.flush() {
+//                     info!("Failed to flush database: {}", e);
+//                 }
+//             }
+//             Err(e) => {
+//                 error!("Failed to acquire write lock for database flush: {}", e);
+//             }
+//         }
+//     }
+// }
