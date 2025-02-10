@@ -8,7 +8,7 @@ use serde::{Deserialize, Serialize};
 use std::fmt;
 fn main() {
     {
-        ::std::io::_print(format_args!("{0:?}\n", Tables::Headers.table_type()));
+        ::std::io::_print(format_args!("{0:?}\n", Tables::Headers.name()));
     };
 }
 pub trait Key: Ord + Clone + Serialize + for<'a> Deserialize<'a> {}
@@ -76,16 +76,11 @@ impl ::core::clone::Clone for TableType {
 pub trait TableInfo: Send + Sync + fmt::Debug + 'static {
     /// The table's name.
     fn name(&self) -> &'static str;
-    /// Whether the table is a `DUPSORT` table.
-    fn is_dupsort(&self) -> bool;
 }
 pub trait TableViewer<R> {
     /// The error type returned by the viewer.
     type Error;
     /// Calls `view` with the correct table type.
-    fn view_rt(&self, table: Tables) -> Result<R, Self::Error> {
-        table.view(self)
-    }
     /// Operate on the table in a generic way.
     fn view<T: Table>(&self) -> Result<R, Self::Error>;
 }
@@ -336,17 +331,6 @@ impl Tables {
     pub const fn is_dupsort(&self) -> bool {
         false
     }
-    /// The type of the given table in database.
-    pub const fn table_type(&self) -> TableType {
-        if self.is_dupsort() { TableType::DupSort } else { TableType::Table }
-    }
-    /// Allows to operate on specific table type
-    pub fn view<T, R>(&self, _visitor: &T) -> Result<R, T::Error>
-    where
-        T: ?Sized + TableViewer<R>,
-    {
-        ::core::panicking::panic("not yet implemented")
-    }
 }
 impl fmt::Debug for Tables {
     #[inline]
@@ -382,9 +366,6 @@ impl std::str::FromStr for Tables {
 impl TableInfo for Tables {
     fn name(&self) -> &'static str {
         self.name()
-    }
-    fn is_dupsort(&self) -> bool {
-        self.is_dupsort()
     }
 }
 impl TableSet for Tables {

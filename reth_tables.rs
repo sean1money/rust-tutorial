@@ -25,6 +25,8 @@ pub trait Table: Send + Sync + fmt::Debug + 'static {
     const NAME: &'static str;
     /// Whether the table is also a `DUPSORT` table.
     const DUPSORT: bool;
+    const CF: u32;
+    const KEY_PREFIX: &'static str;
     /// Key element of `Table`.
     ///
     /// Sorting should be taken into account when encoding this.
@@ -84,6 +86,8 @@ pub trait TableInfo: Send + Sync + fmt::Debug + 'static {
     fn name(&self) -> &'static str;
     /// Whether the table is a `DUPSORT` table.
     fn is_dupsort(&self) -> bool;
+    fn cf(&self) -> u32;
+    fn key_prefix(&self) -> &'static str;
 }
 pub trait TableViewer<R> {
     /// The error type returned by the viewer.
@@ -244,6 +248,8 @@ where
 {
     const NAME: &'static str = table_names::Headers;
     const DUPSORT: bool = false;
+    const CF: u32 = 1;
+    const KEY_PREFIX: &str = "sa_";
     type Key = BlockNumber;
     type Value = Header;
 }
@@ -270,6 +276,8 @@ where
 {
     const NAME: &'static str = table_names::BlockBodyIndices;
     const DUPSORT: bool = false;
+    const CF: u32 = 1;
+    const KEY_PREFIX: &str = "b_";
     type Key = BlockNumber;
     type Value = StoredBlockBody;
 }
@@ -325,6 +333,18 @@ impl Tables {
         match self {
             Self::Headers => table_names::Headers,
             Self::BlockBodyIndices => table_names::BlockBodyIndices,
+        }
+    }
+    pub const fn cf(&self) -> u32 {
+        match self {
+            Self::Headers => 1,
+            Self::BlockBodyIndices => 1,
+        }
+    }
+    pub const fn key_prefix(&self) -> &'static str {
+        match self {
+            Self::Headers => "sa_",
+            Self::BlockBodyIndices => "b_",
         }
     }
     /// Returns `true` if the table is a `DUPSORT` table.
@@ -386,6 +406,12 @@ impl TableInfo for Tables {
     }
     fn is_dupsort(&self) -> bool {
         self.is_dupsort()
+    }
+    fn cf(&self) -> u32 {
+        self.cf()
+    }
+    fn key_prefix(&self) -> &'static str {
+        self.key_prefix()
     }
 }
 impl TableSet for Tables {

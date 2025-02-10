@@ -32,6 +32,10 @@ pub trait Table: Send + Sync + fmt::Debug + 'static {
     /// Whether the table is also a `DUPSORT` table.
     const DUPSORT: bool;
 
+    const CF: u32;
+
+    const KEY_PREFIX: &'static str;
+
     /// Key element of `Table`.
     ///
     /// Sorting should be taken into account when encoding this.
@@ -56,6 +60,9 @@ pub trait TableInfo: Send + Sync + fmt::Debug + 'static {
 
     /// Whether the table is a `DUPSORT` table.
     fn is_dupsort(&self) -> bool;
+
+    fn cf(&self) -> u32;
+    fn key_prefix(&self) -> &'static str;
 }
 
 pub trait TableViewer<R> {
@@ -95,6 +102,14 @@ macro_rules! tables {
         true
     };
 
+    (@prefix) => {
+        ""
+    };
+
+    (@prefix $key_prefix:expr) => {
+        $key_prefix
+    };
+
     (@view $name:ident $v:ident) => {
         $v.view::<$name>()
     };
@@ -111,7 +126,7 @@ macro_rules! tables {
         concat!("`", stringify!($value), "`")
     };
 
-    ($($(#[$attr:meta])* table $name:ident$(<$($generic:ident $(= $default:ty)?),*>)? { type Key = $key:ty; type Value = $value:ty; $(type SubKey = $subkey:ty;)? } )*) => {
+    ($($(#[$attr:meta])* table $name:ident$(<$($generic:ident $(= $default:ty)?),*>)? { const CF = $cf:expr; $(const KEY_PREFIX = $key_prefix:expr;)? type Key = $key:ty; type Value = $value:ty; $(type SubKey = $subkey:ty;)? } )*) => {
         // Table marker types.
         $(
             $(#[$attr])*
@@ -139,6 +154,8 @@ macro_rules! tables {
             {
                 const NAME: &'static str = table_names::$name;
                 const DUPSORT: bool = tables!(@bool $($subkey)?);
+                const CF: u32 = $cf;
+                const KEY_PREFIX: &str = tables!(@prefix $($key_prefix)?);
 
                 type Key = $key;
                 type Value = $value;
@@ -177,6 +194,22 @@ macro_rules! tables {
                 match self {
                     $(
                         Self::$name => table_names::$name,
+                    )*
+                }
+            }
+
+            pub const fn cf(&self) -> u32 {
+                match self {
+                    $(
+                        Self::$name => $cf,
+                    )*
+                }
+            }
+
+            pub const fn key_prefix(&self) -> &'static str {
+                match self {
+                    $(
+                        Self::$name => tables!(@prefix $($key_prefix)?),
                     )*
                 }
             }
@@ -246,6 +279,14 @@ macro_rules! tables {
 
             fn is_dupsort(&self) -> bool {
                 self.is_dupsort()
+            }
+
+            fn cf(&self) -> u32 {
+                self.cf()
+            }
+
+            fn key_prefix(&self) -> &'static str {
+                self.key_prefix()
             }
         }
 
@@ -320,11 +361,15 @@ impl Value for StoredBlockBody {}
 
 tables! {
     table Headers {
+        const CF = 1;
+        const KEY_PREFIX = "sa_";
         type Key = BlockNumber;
         type Value = Header;
     }
 
     table BlockBodyIndices {
+        const CF = 1;
+        const KEY_PREFIX = "b_";
         type Key = BlockNumber;
         type Value = StoredBlockBody;
     }
