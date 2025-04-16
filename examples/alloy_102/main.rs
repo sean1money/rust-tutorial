@@ -1,4 +1,5 @@
 use alloy::primitives::{Bytes, ChainId, TxHash};
+use alloy_primitives::{Address, U256};
 use alloy_rlp::{RlpDecodable, RlpEncodable};
 use serde::{Deserialize, Serialize};
 
@@ -11,6 +12,8 @@ fn main() {
 pub struct RecoveryMessage {
     pub nonce: u64,
     pub incomplete_signatures: Vec<IncompleteSignature>,
+    pub address: Address,
+    pub value: U256,
     pub chain_id: Option<ChainId>,
 }
 
